@@ -1,5 +1,3 @@
-#include "chk/input.h"
-#include "glad/gl.h"
 #include "win_base.h"
 
 static s32_t g_win_count = 0;
@@ -118,11 +116,14 @@ s32_t win_step(win_t *win, bool poll_events) {
   s32_t result = 1;
 
   if (win) {
-    if (win->is.running) {
-      if (poll_events) {
-        glfwPollEvents();
-      }
+    if (poll_events) {
+      glfwPollEvents();
+    }
 
+    // Don't run the frame if we're closed.
+    // Fixes crashes on wayland-linux.
+    if (win->is.running) {
+      glfwMakeContextCurrent(win->_impl);
       glViewport(0, 0, win->data.fb_w, win->data.fb_h);
       glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
