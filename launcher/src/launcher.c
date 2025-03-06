@@ -1,9 +1,14 @@
+#include "chk/win.h"
 #include <chk/launcher.h>
 
 int main() {
-  log_debug("Welcome");
-  log_info("to chk_renderer!");
-  log_warn("still in progress...");
+  s32_t result = 1;
 
-  return 0;
+  win_t win;
+  if (win_create(&win, 800, 600, "chk_launcher")) {
+    result = win_run(&win, NULL, NULL);
+    win_destroy(&win);
+  }
+
+  return result;
 }

@@ -8,5 +8,5 @@ target_sources(chk_launcher
 )
 
 target_link_libraries(chk_launcher 
-  PUBLIC chk::core
+  PUBLIC chk::core chk::win
 )

@@ -5,6 +5,7 @@ target_sources(chk_core
   PUBLIC FILE_SET chk_core_hdrs TYPE HEADERS BASE_DIRS "include" FILES
     "include/chk/core.h"
     "include/chk/fmt.h"
+    "include/chk/input.h"
     "include/chk/log.h"
     "include/chk/types.h"
   PRIVATE
