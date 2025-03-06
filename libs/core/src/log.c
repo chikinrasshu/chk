@@ -50,7 +50,7 @@ void log_raw(log_sev_t sev, cstr_t msg, cstr_t base, cstr_t file, u32_t line,
 
   // Abort if sev is fatal
   if (sev == log_sev_fatal) {
-    abort();
+    exit(1);
   }
 }
 
