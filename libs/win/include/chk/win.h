@@ -16,6 +16,8 @@ typedef struct win_data {
   f32_t dpi_x, dpi_y;
   f32_t dt, _lt;
   u64_t frame_count;
+
+  char caption[64];
 } win_data_t;
 
 typedef struct win_state {
@@ -51,6 +53,12 @@ typedef struct win {
 
 bool win_create(win_t *win, s32_t w, s32_t h, cstr_t caption);
 bool win_destroy(win_t *win);
+
+bool win_impl_set_caption(win_t *win, cstr_t caption);
+bool win_impl_set_caption_f(win_t *win, cstr_t caption, ...);
+
+#define win_set_caption(win, caption, ...)                                     \
+  win_impl_set_caption##__VA_OPT__(_f)(win, caption __VA_OPT__(, ) __VA_ARGS__);
 
 s32_t win_step(win_t *win, bool poll_events);
 s32_t win_run(win_t *win, win_callback_t *on_frame, void *user_ptr);

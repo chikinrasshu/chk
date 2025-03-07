@@ -1,5 +1,7 @@
 #include "win_base.h"
 
+#include <chk/fmt.h>
+
 static s32_t g_win_count = 0;
 
 bool win_create(win_t *win, s32_t w, s32_t h, cstr_t caption) {
@@ -14,11 +16,13 @@ bool win_create(win_t *win, s32_t w, s32_t h, cstr_t caption) {
   }
 
   ++g_win_count;
-  log_debug("global win count is now '%d'", g_win_count);
+  // log_debug("global win count is now '%d'", g_win_count);
 
   if (g_win_count > 0) {
     if (win) {
       *win = (win_t){0};
+
+      fmt_str(win->data.caption, countof(win->data.caption), "%s", caption);
 
       glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
@@ -28,9 +32,9 @@ bool win_create(win_t *win, s32_t w, s32_t h, cstr_t caption) {
       glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
       glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-      win->_impl = glfwCreateWindow(w, h, caption, NULL, NULL);
+      win->_impl = glfwCreateWindow(w, h, win->data.caption, NULL, NULL);
       if (win->_impl) {
-        log_info("win '%s' created", caption);
+        log_info("win '%s' created", win->data.caption);
 
         glfwMakeContextCurrent(win->_impl);
         s32_t gl = gladLoadGL(glfwGetProcAddress);
@@ -65,14 +69,14 @@ bool win_create(win_t *win, s32_t w, s32_t h, cstr_t caption) {
           glfwSetKeyCallback(win->_impl, win_cb_on_kbd_key);
           glfwSetCharCallback(win->_impl, win_cb_kbd_unicode);
 
-          log_debug("win '%s' initialized", caption);
+          // log_debug("win '%s' initialized", win->data.caption);
           win->is.running = true;
           result = true;
         } else {
           log_error("opengl could not be initialized");
         }
       } else {
-        log_error("win '%s' could not be created", caption);
+        log_error("win '%s' could not be created", win->data.caption);
       }
     } else {
       log_error("win was NULL");
@@ -90,13 +94,14 @@ bool win_destroy(win_t *win) {
   if (win) {
     if (win->_impl) {
       glfwDestroyWindow(win->_impl);
+      log_info("win '%s' destroyed", win->data.caption);
 
       --g_win_count;
-      log_debug("global win count is now '%d'", g_win_count);
+      // log_debug("global win count is now '%d'", g_win_count);
 
       if (!g_win_count) {
         glfwTerminate();
-        log_debug("win ran for %llu frames", win->data.frame_count);
+        // log_debug("win ran for %llu frames", win->data.frame_count);
         log_info("win subsystem terminated");
       }
 
@@ -105,6 +110,40 @@ bool win_destroy(win_t *win) {
     } else {
       log_error("win was not initialized");
     }
+  } else {
+    log_error("win was NULL");
+  }
+
+  return result;
+}
+
+bool win_impl_set_caption(win_t *win, cstr_t caption) {
+  bool result = false;
+
+  if (win) {
+    fmt_str(win->data.caption, countof(win->data.caption), "%s", caption);
+    glfwSetWindowTitle(win->_impl, win->data.caption);
+
+    result = true;
+  } else {
+    log_error("win was NULL");
+  }
+
+  return result;
+}
+
+bool win_impl_set_caption_f(win_t *win, cstr_t caption, ...) {
+  bool result = false;
+
+  if (win) {
+    va_list args;
+    va_start(args, caption);
+    fmt_str_v(win->data.caption, countof(win->data.caption), caption, args);
+    va_end(args);
+
+    glfwSetWindowTitle(win->_impl, win->data.caption);
+
+    result = true;
   } else {
     log_error("win was NULL");
   }
