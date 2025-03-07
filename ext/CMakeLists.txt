@@ -44,7 +44,7 @@ if (Python_FOUND)
     message(FATAL_ERROR "glad2 OpenGL Generator requires the jinja2 python module to be installed")
   endif()
 else()
-  message(FATAL_ERROR "glad2 OpenGL Generator requires OpenGL to be installed")
+  message(FATAL_ERROR "glad2 OpenGL Generator requires Python to be installed")
 endif()
 
 glad_add_library(glad_gl QUIET REPRODUCIBLE API gl:core=4.1)
