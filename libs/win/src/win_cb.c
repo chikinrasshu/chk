@@ -107,7 +107,7 @@ void win_cb_on_mouse_btn(GLFWwindow *_h, s32_t b, s32_t a, s32_t m) {
 void win_cb_on_kbd_key(GLFWwindow *_h, s32_t k, s32_t sc, s32_t a, s32_t m) {
   win_t *win = glfwGetWindowUserPointer(_h);
   if (win) {
-    size_t i = win_input_mouse_from_impl(k);
+    size_t i = win_input_kbd_from_impl(k);
     key_t *key = &win->input.kbd.keys[i];
 
     switch (a) {
