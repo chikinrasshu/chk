@@ -1,0 +1,3 @@
+[submodule "core/external/cwalk"]
+	path = core/external/cwalk
+	url = https://github.com/likle/cwalk
